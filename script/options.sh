@@ -3,8 +3,21 @@ set -uo pipefail
 
 create_contact() {
     read -p "Inform the contact's name: " name
+
+    if jq '.[] | .name' contacts.json | grep $name > /dev/null; then
+        echo -e "\nThis name already exists in your list of contacts.\n"
+        return
+    fi
+
     read -p "Inform the contact's number: " number
-    echo "$name, $number" >> contacts.csv
+
+    updated_list=$(cat contacts.json | jq ". += [{
+        \"name\": \"${name}\",
+        \"number\": \"${number}\"
+    }]")
+
+    echo $updated_list > contacts.json
+
 
     echo -e "\nThe contact was successfully saved.\n"
 }

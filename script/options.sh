@@ -2,7 +2,11 @@
 set -uo pipefail
 
 create_contact() {
-    echo "TODO"
+    read -p "Inform the contact's name: " name
+    read -p "Inform the contact's number: " number
+    echo "$name, $number" >> contacts.csv
+
+    echo -e "\nThe contact was successfully saved.\n"
 }
 
 read_contact() {

@@ -13,7 +13,9 @@ print_menu() {
 }
 
 analyse_input() {
-    case $1 in
+    parameter="$1"
+    input="${parameter^^}"
+    case $input in
         C)
             create_contact ;;
         R)

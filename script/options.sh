@@ -18,12 +18,19 @@ create_contact() {
 
     echo $updated_list > contacts.json
 
-
     echo -e "\nThe contact was successfully saved.\n"
 }
 
 read_contact() {
-    echo "TODO"
+    read -p "Inform the contact's name: " name
+
+    if jq '.[] | .name' contacts.json | grep $name > /dev/null; then
+        number=$(jq ".[] | select(.name==\"$name\") | .number" contacts.json)
+        echo -e "Name: $name"
+        echo -e "Number: $number\n"
+    else 
+        echo -e "This name does not exist in your list of contacts.\n"
+    fi
 }
 
 update_contact() {

@@ -18,7 +18,7 @@ jobs:
       - checkout
       - run:
           name: execute tests
-          command: ./src/tests/crud.sh
+          command: bash ./src/tests/crud.sh
   
 
 workflows:

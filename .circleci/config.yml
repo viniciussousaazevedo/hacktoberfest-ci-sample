@@ -1,25 +1,41 @@
 version: 2.1
 
+# YAML anchors
+default-docker-image: &default-docker-image
+  docker:
+    - image: cimg/base:2023.03 # Definir uma imagem Docker específica para um job no CircleCI garante que o ambiente seja consistente e previsível, independentemente de onde o pipeline esteja sendo executado. As vezes, certas imagens já tem conteúdos prontos que facilitam o desenrolar de um job.
+
+environment:
+  DOCKER_IMAGE_NAME: "viniciussousaazevedo/hacktoberfest-ci-sample"
+
 orbs:
   jq: circleci/jq@3.0.0
   # WARNING: cuidado com orbes ;)
 
 jobs:
   prepare-environment:
-    docker:
-      - image: cimg/base:2023.03
+    <<: *default-docker-image
     steps:
       - jq/install:
           version: jq-1.7
+      # Qualquer etapa de build (ex: mvn clean package) entraria aqui também
   run-tests:
-    docker:
-      - image: cimg/base:2023.03
+    <<: *default-docker-image
     steps:
-      - checkout
+      - checkout # recuperar o código-fonte do repositório versionado
       - run:
           name: execute tests
           command: bash ./src/tests/crud.sh
-  
+  update-dockerhub-image:
+    <<: *default-docker-image
+    steps:
+      - checkout
+      - run:
+          name: Build and Push Docker Image
+          command: |
+            docker build -t $DOCKER_IMAGE_NAME .
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker push $DOCKER_IMAGE_NAME
 
 workflows:
   test-and-build:
@@ -28,4 +44,12 @@ workflows:
       - run-tests:
           requires:
             - prepare-environment
+      - update-dockerhub-image:
+          context: DOCKER_CREDENTIALS
+          requires:
+            - run-tests
+          filters:
+            branches:
+              only:
+                - main
       

@@ -49,6 +49,47 @@ read_single_contat() {
     fi
 }
 
+update_single_contact() {
+    if [ $(cat $DB | grep -c $1) -eq "0" ] ; then
+        update_contact $1 $2 $3 > /dev/null
+        if [ $(cat $DB | grep -c $1) -eq "0" ] ; then
+            log info "CONTACT DOES NOT EXIST: $1 -> $2"
+        else
+            log error "INVALID CONTACT UPDATED: $1 -> $2"
+            exit 1
+        fi
+    else
+        update_contact $1 $2 $3 > /dev/null
+        if [ $(cat $DB | grep -c $2) -eq "1" ] ; then
+            # TODO é preciso checar o número novo também
+            log info "UPDATED CONTACT: $1 -> $2"
+        else
+            log error "CONTACT REMOVED OR DUPLICATED: $1 -> $2"
+            exit 1
+        fi
+    fi
+}
+
+delete_single_contact() {
+    if [ $(cat $DB | grep -c $1) -eq "0" ] ; then
+        delete_contact $1 > /dev/null
+        if [ $(cat $DB | grep -c $1) -eq "0" ] ; then
+            log info "CONTACT DOES NOT EXIST: $1"
+        else
+            log error "CONTACT HAS BEEN CREATED: $1"
+            exit 1
+        fi
+    else
+        delete_contact $1 > /dev/null
+        if [ $(cat $DB | grep -c $1) -eq "0" ] ; then
+            log info "CONTACT HAS BEEN REMOVED: $1"
+        else
+            log error "CONTACT HAS NOT BEEN REMOVED: $1"
+            exit 1
+        fi
+    fi
+}
+
 creation_test() {
     echo "[]" > $DB
     log info "===== INITIALIZING CREATION TEST ====="
@@ -72,10 +113,23 @@ read_test() {
 
 update_test() {
     log info "===== INITIALIZING UPDATE TEST ====="
+    update_single_contact "vinicius" "alberto" "8333"
+    update_single_contact "alberto" "vinicius" "9999"
+    update_single_contact "neto" "neto" "5555"
+    update_single_contact "rejane" "melina" "123456"
+    update_single_contact "melina" "felicia" "1111"
+    update_single_contact "vinicius" "neto" "0000" # FIXME
 }
 
 deletion_test() {
     log info "===== INITIALIZING DELETION TEST ====="
+    delete_single_contact "melina"
+    delete_single_contact "anabelle"
+    delete_single_contact "neto"
+    delete_single_contact "neto"
+    delete_single_contact "ed"
+    delete_single_contact "neto"
+    delete_single_contact "vinicius"
 }
 
 creation_test

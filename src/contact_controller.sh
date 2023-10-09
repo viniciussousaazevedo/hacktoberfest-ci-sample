@@ -57,6 +57,7 @@ delete_contact_menu() {
 
 
 main() {
+    create_database
     while true; do
         print_menu
         read -p "Enter your choice: " input

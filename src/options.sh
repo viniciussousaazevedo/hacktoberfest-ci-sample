@@ -3,6 +3,12 @@ set -uo pipefail
 export DB="src/contacts.json"
 export PATH=$DB:$PATH
 
+create_database() {
+    if [ -s $DB ] ; then
+        echo "[]" > $DB
+    fi
+}
+
 contacts_contains() {
     if jq '.[] | .name' $DB | grep -qw "$1"; then
         return 0 # true

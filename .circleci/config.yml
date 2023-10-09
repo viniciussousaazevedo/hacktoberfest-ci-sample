@@ -6,7 +6,7 @@ default-docker-image: &default-docker-image
     - image: cimg/base:2023.03 # Definir uma imagem Docker específica para um job no CircleCI garante que o ambiente seja consistente e previsível, independentemente de onde o pipeline esteja sendo executado. As vezes, certas imagens já tem conteúdos prontos que facilitam o desenrolar de um job.
 
 environment:
-  DOCKER_IMAGE_NAME: "viniciussousaazevedo/hacktoberfest-ci-sample"
+  DOCKER_IMAGE_NAME: "viniciussousaazevedo/hacktoberfest_ci_sample"
 
 orbs:
   jq: circleci/jq@3.0.0

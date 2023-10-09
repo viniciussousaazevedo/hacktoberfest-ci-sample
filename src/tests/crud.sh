@@ -37,12 +37,14 @@ read_single_contat() {
             log info "DOES NOT EXIST: $1"
         else
             log error "READ WRONG CONTENT: $1"
+            exit 1
         fi
     else
         if [ "$output" != "$error_message" ] ; then
             log info "READ: $1"
         else
             log error "COULD NOT READ: $1"
+            exit 1
         fi
     fi
 }
@@ -68,5 +70,15 @@ read_test() {
     read_single_contat "geraldo"
 }
 
+update_test() {
+    log info "===== INITIALIZING UPDATE TEST ====="
+}
+
+deletion_test() {
+    log info "===== INITIALIZING DELETION TEST ====="
+}
+
 creation_test
 read_test
+update_test
+deletion_test

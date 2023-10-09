@@ -4,7 +4,7 @@ export DB="src/contacts.json"
 export PATH=$DB:$PATH
 
 create_database() {
-    if [ -s $DB ] ; then
+    if [ -s $DB ] || [ ! -f $DB ] ; then
         echo "[]" > $DB
     fi
 }

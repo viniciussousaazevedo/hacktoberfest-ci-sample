@@ -33,9 +33,9 @@ jobs:
       - run:
           name: Build and Push Docker Image
           command: |
-            docker build -t $DOCKER_IMAGE_NAME .
+            docker build -t $DOCKER_IMAGE_NAME:latest .
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            docker push $DOCKER_IMAGE_NAME
+            docker push $DOCKER_IMAGE_NAME:latest
 
 workflows:
   test-and-build:

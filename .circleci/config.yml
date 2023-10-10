@@ -10,6 +10,7 @@ environment:
 
 orbs:
   jq: circleci/jq@3.0.0
+  docker: circleci/docker@2.4.0
   # WARNING: cuidado com orbes ;)
 
 jobs:
@@ -31,11 +32,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build and Push Docker Image
-          command: |
-            docker build -t $DOCKER_IMAGE_NAME .
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            docker push $DOCKER_IMAGE_NAME:latest
+          name: Docker Login
+          command: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - docker/build:
+          image: $DOCKER_IMAGE_NAME
+      - docker/push:
+          image: $DOCKER_IMAGE_NAME
 
 workflows:
   test-and-build:

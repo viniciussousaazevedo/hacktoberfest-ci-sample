@@ -40,8 +40,8 @@ workflows:
           image: viniciussousaazevedo/hacktoberfest_ci_sample
           requires:
             - run-tests
-          # filters:
-          #   branches:
-          #     only:
-          #       - main
+          filters:
+            branches:
+              only:
+                - main
       

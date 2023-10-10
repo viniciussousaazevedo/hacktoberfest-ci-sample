@@ -19,6 +19,7 @@ jobs:
     steps:
       - jq/install:
           version: jq-1.7
+      - docker/install-docker-tools
       # Qualquer etapa de build (ex: mvn clean package) entraria aqui também
   run-tests:
     <<: *default-docker-image

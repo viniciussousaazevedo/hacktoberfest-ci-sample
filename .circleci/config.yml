@@ -26,7 +26,7 @@ jobs:
       - checkout # recuperar o código-fonte do repositório versionado
       - run:
           name: execute tests
-          command: bash ./src/tests/crud.sh
+          command: bash ./src/tests/crud.sh      
 
 workflows:
   test-and-build:
@@ -36,8 +36,8 @@ workflows:
           requires:
             - prepare-environment
       - docker/publish:
-          image: viniciussousaazevedo/hacktoberfest_ci_sample
           context: DOCKER_CREDENTIALS
+          image: viniciussousaazevedo/hacktoberfest_ci_sample
           requires:
             - run-tests
           # filters:

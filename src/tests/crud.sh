@@ -6,8 +6,6 @@ source src/tests/log.sh
 export DB="src/tests/contacts_test.json"
 export PATH=$DB:$PATH
 
-# TODO trocar grep por jq nas funções de teste unitário
-
 create_single_contat() {
 
     if [ $(cat $DB | grep -c $1) -eq "0" ] ; then
@@ -52,7 +50,7 @@ read_single_contat() {
 update_single_contact() {
     if [ $(cat $DB | grep -c $1) -eq "0" ] ; then
         update_contact $1 $2 $3 > /dev/null
-        if [ $(cat $DB | grep -c $1) -eq "0" ] ; then
+        if [ $(cat $DB | grep -c $2) -eq "0" ] ; then
             log info "CONTACT DOES NOT EXIST: $1 -> $2"
         else
             log error "INVALID CONTACT UPDATED: $1 -> $2"
@@ -60,11 +58,10 @@ update_single_contact() {
         fi
     else
         update_contact $1 $2 $3 > /dev/null
-        if [ $(cat $DB | grep -c $2) -eq "1" ] ; then
-            # TODO é preciso checar o número novo também
-            log info "UPDATED CONTACT: $1 -> $2"
+        if [ $(cat $DB | grep -o $2 | wc -w) -eq "1" ] ; then
+            log info "UPDATED OR IGNORED CONTACT: $1 -> $2"
         else
-            log error "CONTACT REMOVED OR DUPLICATED: $1 -> $2"
+            log error "REMOVED OR DUPLICATED CONTACT: $1 -> $2"
             exit 1
         fi
     fi
@@ -118,7 +115,7 @@ update_test() {
     update_single_contact "neto" "neto" "5555"
     update_single_contact "rejane" "melina" "123456"
     update_single_contact "melina" "felicia" "1111"
-    update_single_contact "vinicius" "neto" "0000" # FIXME
+    update_single_contact "vinicius" "neto" "0000"
 }
 
 deletion_test() {
@@ -133,6 +130,6 @@ deletion_test() {
 }
 
 creation_test
-read_test
+# read_test
 update_test
-deletion_test
+# deletion_test

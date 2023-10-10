@@ -19,7 +19,6 @@ jobs:
     steps:
       - jq/install:
           version: jq-1.7
-      - docker/install-docker-tools
       # Qualquer etapa de build (ex: mvn clean package) entraria aqui também
   run-tests:
     <<: *default-docker-image
@@ -28,17 +27,6 @@ jobs:
       - run:
           name: execute tests
           command: bash ./src/tests/crud.sh
-  update-dockerhub-image:
-    <<: *default-docker-image
-    steps:
-      - checkout
-      - run:
-          name: Docker Login
-          command: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker/build:
-          image: viniciussousaazevedo/hacktoberfest_ci_sample
-      - docker/push:
-          image: viniciussousaazevedo/hacktoberfest_ci_sample
 
 workflows:
   test-and-build:
@@ -47,7 +35,8 @@ workflows:
       - run-tests:
           requires:
             - prepare-environment
-      - update-dockerhub-image:
+      - docker/publish:
+          image: viniciussousaazevedo/hacktoberfest_ci_sample
           context: DOCKER_CREDENTIALS
           requires:
             - run-tests

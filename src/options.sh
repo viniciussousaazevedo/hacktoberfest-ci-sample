@@ -46,7 +46,8 @@ read_contact() {
 update_contact() {
 
     if contacts_contains $1; then
-        # BUG: e se new_name já existir na lista?
+
+        
 
         contact=$(jq ".[] | select(.name==\"$1\") | .name = \"$2\" | .number = \"$3\"" $DB)
         partial_list=$(jq "del(.[] | select(.name == \"$1\"))" $DB)
